@@ -1,0 +1,249 @@
+{
+  "name": "LeadInboxTriageBot_ChallengeC_DailyDigest",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 30 3 * * 1-5"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -112,
+        320
+      ],
+      "id": "25e58320-dc64-45b9-96db-af7b1f3b30ab",
+      "name": "Daily 9AM IST Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM",
+          "mode": "list",
+          "cachedResultName": "Lead Inbox CRM"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "leads",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        208,
+        192
+      ],
+      "id": "04403491-ac54-4bf1-ab09-d7e5a1130214",
+      "name": "Read Leads Tab",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1SjvP7Pqg1SrTi1S",
+          "name": "Google Sheets account crm"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM",
+          "mode": "list",
+          "cachedResultName": "Lead Inbox CRM"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "support",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        208,
+        320
+      ],
+      "id": "17e62ef8-4327-4904-8293-abb091db1312",
+      "name": "Read Support Tab",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1SjvP7Pqg1SrTi1S",
+          "name": "Google Sheets account crm"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM",
+          "mode": "list",
+          "cachedResultName": "Lead Inbox CRM"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "errors",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        208,
+        464
+      ],
+      "id": "46a0526a-5f56-426d-887c-2011f9b533bc",
+      "name": "Read Errors Tab",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1SjvP7Pqg1SrTi1S",
+          "name": "Google Sheets account crm"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst now = new Date();\nconst cutoff = new Date(now.getTime() - 24 * 60 * 60 * 1000);\n\nconst allLeads = $('Read Leads Tab').all().map(i => i.json);\nconst allSupport = $('Read Support Tab').all().map(i => i.json);\nconst allErrors = $('Read Errors Tab').all().map(i => i.json);\n\nconst recentLeads = allLeads.filter(r => r.created_at && new Date(r.created_at) >= cutoff);\nconst recentSupport = allSupport.filter(r => r.created_at && new Date(r.created_at) >= cutoff);\nconst recentErrors = allErrors.filter(r => r.created_at && new Date(r.created_at) >= cutoff);\n\n// Top 3 leads by priority\nconst priorityOrder = { HIGH: 0, MEDIUM: 1, LOW: 2 };\nconst top3 = recentLeads\n  .sort((a, b) => (priorityOrder[a.priority] ?? 3) - (priorityOrder[b.priority] ?? 3))\n  .slice(0, 3);\n\nconst unresolvedSupport = recentSupport.filter(r => !r.status || r.status === 'NEW');\n\nconst digestDate = now.toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Kolkata' });\n\nconst top3Lines = top3.length > 0\n  ? top3.map((l, i) => `${i+1}. [${l.priority || 'N/A'}] ${l.sender_email} — ${(l.subject || '').slice(0,60)}`).join('\\n')\n  : 'No leads today.';\n\nconst errorFlag = recentErrors.length > 0 ? `⚠️ ${recentErrors.length} error(s) logged — check errors tab` : '✅ No errors in last 24h';\n\nreturn [{\n  json: {\n    digest_date: digestDate,\n    new_leads_count: recentLeads.length,\n    top3_leads: top3Lines,\n    unresolved_support_count: unresolvedSupport.length,\n    total_errors_count: recentErrors.length,\n    error_flag: errorFlag,\n    slack_text: [\n      `📊 *Daily Digest — ${digestDate}*`,\n      ``,\n      `*New Leads (last 24h):* ${recentLeads.length}`,\n      `*Top 3 by Priority:*`,\n      top3Lines,\n      ``,\n      `*Unresolved Support Tickets:* ${unresolvedSupport.length}`,\n      ``,\n      errorFlag\n    ].join('\\n')\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        544,
+        320
+      ],
+      "id": "3e0237a4-bb70-4bfa-8176-57bb70d47a41",
+      "name": "Build Digest"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0B5A5PB0HW",
+          "mode": "list",
+          "cachedResultName": "all-n8n"
+        },
+        "text": "={{ $json.slack_text }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        784,
+        320
+      ],
+      "id": "24feaef8-70e0-4d8e-99dd-d9565d1dc94a",
+      "name": "Post Digest to Slack",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "webhookId": "54889a98-78de-4aa9-86ac-be0b0f0118e9",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "qgFE43ThoZv9LK2G",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Challenge C — Daily Digest\nRuns every weekday at 09:00 IST (03:30 UTC).\nPosts to #all-n8n:\n- Count of new leads (last 24h)\n- Top 3 by priority\n- Unresolved support ticket count\n- Error flag if any errors logged\n\nNo credentials in plain text. Sheet IDs match the main CRM.",
+        "height": 260,
+        "width": 420,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -64,
+        -96
+      ],
+      "id": "4a9b4a47-ae5d-44c7-9a30-661b9e2f8a00",
+      "name": "Sticky_ChallengeC"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Daily 9AM IST Trigger": {
+      "main": [
+        [
+          {
+            "node": "Read Leads Tab",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Support Tab",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Errors Tab",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Leads Tab": {
+      "main": [
+        [
+          {
+            "node": "Build Digest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Digest": {
+      "main": [
+        [
+          {
+            "node": "Post Digest to Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "e192f69b-ad7b-41fd-950f-bb8858e9738b",
+  "meta": {
+    "instanceId": "f91ee16137fc0b3b8b4f816350ad8ce6321c2a8bbdb1ac02b686ae39644faa85"
+  },
+  "id": "fACZRYJkzrLye2dT",
+  "tags": [
+    {
+      "updatedAt": "2026-05-17T12:35:49.949Z",
+      "createdAt": "2026-05-17T12:35:49.949Z",
+      "id": "HP8bIX2EyHTE8tjn",
+      "name": "training"
+    },
+    {
+      "name": "digest",
+      "id": "7OZR8k3lXTnfNW6k",
+      "updatedAt": "2026-05-21T06:36:55.683Z",
+      "createdAt": "2026-05-21T06:36:55.683Z"
+    }
+  ]
+}

@@ -1,0 +1,3027 @@
+{
+  "name": "LeadInboxTriageBot_Uniqueness_HighThroughput",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "maxResults": 1,
+        "filters": {
+          "labelIds": [
+            "INBOX"
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -3680,
+        1312
+      ],
+      "id": "50058a14-456e-4b5f-8dc6-409d3837f84b",
+      "name": "Watch inbox",
+      "retryOnFail": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wnFgwhE90UOmbOE2",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b689c1ae-5c5e-4987-a130-28914b8aea18",
+              "name": "gmail_id",
+              "value": "={{ $json.id || \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "c986fb8b-c6ff-4418-883c-a24058176c44",
+              "name": "threadId",
+              "value": "={{ $json.threadId || \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "2a1e0b09-39e8-4270-9547-9edb40246c8e",
+              "name": "messageId",
+              "value": "={{ $json.messageId || \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "4277a33b-9365-4105-9eff-169bde281708",
+              "name": "subject",
+              "value": "={{ $json.subject || \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "485b1e25-85c0-41aa-a189-d1d30946631a",
+              "name": "body",
+              "value": "={{ $json.text || \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "9c13aae8-5cee-4ea4-9291-eabbfc50db1e",
+              "name": "from_email",
+              "value": "={{ $json.from.value[0].address || \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "172aba08-06c0-4378-8672-40dd4d881aa5",
+              "name": "from_name",
+              "value": "={{ $json.from.value[0].name || \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "5835d429-7331-4851-ab41-a4b34c85690d",
+              "name": "to_email",
+              "value": "={{ $json.to.value[0].address || \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "923710f8-d8b0-411d-babd-97599d0f90d9",
+              "name": "sender_domain",
+              "value": "={{ ($json.from.value[0].address || \"\").split(\"@\")[1] || \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "a7f28ba7-337c-4e08-92a5-e1cce13b7a41",
+              "name": "receivedAt",
+              "value": "={{ new Date().toISOString() }}",
+              "type": "string"
+            },
+            {
+              "id": "91f9108a-c2ac-4695-b230-e29c64847d2e",
+              "name": "raw_from",
+              "value": "={{ $json.from.text || \"\" }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {
+          "dotNotation": false
+        }
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3408,
+        1312
+      ],
+      "id": "37f92de1-678e-4c80-b27a-6a63b8b7ee38",
+      "name": "Normalize email payload"
+    },
+    {
+      "parameters": {
+        "content": "## Gmail Watcher\n\n**• Polls inbox every minute\n• Detects new inbound emails\n• Filters INBOX messages only\n• Entry point for workflow execution\n• Controlled ingestion pipeline**",
+        "height": 400,
+        "width": 224
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -3728,
+        1072
+      ],
+      "typeVersion": 1,
+      "id": "30c7cd71-091e-440f-8e05-85e09ba3e5d9",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Normalize & Extract Email\n**• Extracts structured email fields, Standardizes sender metadata\n• Builds internal processing schema\n• Cleans inconsistent Gmail payloads, Prepares data for downstream AI logic** ",
+        "height": 400,
+        "width": 224
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -3472,
+        1072
+      ],
+      "typeVersion": 1,
+      "id": "d4694be1-3bdc-448d-b26b-1be79990da7f",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "\n",
+        "height": 560,
+        "width": 656,
+        "color": "#C17B7B"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -3808,
+        960
+      ],
+      "typeVersion": 1,
+      "id": "81a390c4-b80f-4f8b-b2fc-b6e9cd263e22",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## PHASE - 1 \n## Email Ingestion & Normalization Pipeline\n\n**• Gmail inbox polling trigger\n• Real-time inbound email ingestion\n• Metadata extraction & normalization\n• Stable internal payload schema\n• Sender/domain parsing\n• Automated message state handling\n• Preprocessing foundation for AI routing**",
+        "height": 256,
+        "width": 368,
+        "color": "#C17B7B"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -3696,
+        656
+      ],
+      "typeVersion": 1,
+      "id": "7f72d992-5e5e-484e-8a14-9e57dc8bc83e",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "# 🟡 Trigger",
+        "height": 80,
+        "width": 200,
+        "color": 5
+      },
+      "id": "208edd34-f3b6-4c75-8dba-b7535c7f8613",
+      "name": "Section_Trigger",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -3712,
+        976
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b0c22741-7a2e-4ebc-9bfb-bca23749232a",
+              "name": "classification_system_prompt",
+              "value": "You are an email classification engine for a business operations inbox. Your sole job is to read an incoming email and return a single JSON object — nothing else.  CATEGORIES: \n- LEAD: A potential customer expressing genuine interest in purchasing, evaluating, or learning more about products/services. Includes RFPs, demo requests, pricing inquiries, partnership enquiries. \n- SUPPORT: An existing customer reporting a bug, asking a how-to question, or requesting account help. \n- SPAM: Unsolicited mass email, cold sales pitches, newsletters, SEO offers, or automated promotional content. \n- OTHER: Internal forwards, calendar invites, automated system notifications, OOO replies, or anything that doesn't fit the above.  \nEXAMPLES:  \nExample 1 — LEAD: \nEmail: \"Hi, we're evaluating CRM tools for our 50-person sales team. Could you share pricing and arrange a demo?\" \nOutput: {\"category\":\"LEAD\",\"confidence\":0.97,\"reasoning\":\"Explicit demo and pricing request from a decision-maker evaluating tools for a team.\",\"suggested_priority\":\"HIGH\"}  \nExample 2 — SPAM: \nEmail: \"Boost your SEO rankings by 300%! Click here for our limited-time package.\" \nOutput: {\"category\":\"SPAM\",\"confidence\":0.99,\"reasoning\":\"Unsolicited promotional email with no genuine business intent.\",\n\"suggested_priority\":null}  \n\nOUTPUT RULES:\n1. Return raw valid JSON only. No markdown, no code fences, no explanation.\n2. The JSON must contain exactly these four fields:\n   - category\n   - confidence\n   - reasoning\n   - suggested_priority\n3. category must be exactly one of:\n   LEAD, SUPPORT, SPAM, OTHER\n4. confidence must be a float between 0.0 and 1.0\n5. reasoning must be one sentence maximum\n6. suggested_priority must be exactly one of:\n   HIGH, MEDIUM, LOW\n7. \nsuggested_priority must be null when category is not LEAD\n8. If unsure, default to OTHER with low confidence\n9. The response must be valid parsable JSON\n10. Never add extra fields\n11. CRITICAL: The JSON must start with { and end with }. \n    The field  \"suggested_priority\" must be with value exactly \n    one of these strings: HIGH, MEDIUM, LOW.\nmust be null when category is not LEAD.",
+              "type": "string"
+            },
+            {
+              "id": "0eb85692-b484-48e7-a66a-0f31711e99cd",
+              "name": "classification_user_prompt",
+              "value": "=Classify the following email.\nFrom domain: {{$json.sender_domain}} \nSubject: {{$json.subject_clean}} \nBody: {{$json.body_clean}}  \nReturn a single JSON object following the rules in the system prompt. \nReturn only: {\"category\":\"...\",\"confidence\":...,\"reasoning\":\"...\",\"suggested_priority\":...}\nNo other text.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1984,
+        1296
+      ],
+      "id": "96cac400-9d33-439c-9e83-1ebbbf7b4acd",
+      "name": "Prompts"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const item = $json;\n\n// 1. Clean Subject\nconst subject_clean = (item.subject || '')\n  .replace(/^(Re:|Fwd:|FW:|RE:|FWD:|AW:|Aw:)\\s*/gi, '').trim();\n\n// 2. Clean Body\nlet body = item.body || '';\n\n// Remove reply chains\nconst replyStopPatterns = [\n  /On .{5,130}(wrote:|écrit:)/s,\n  /-----+\\s*(Original Message|Forwarded Message|BEGIN)\\s*-----+/i,\n /^From:\\s.*$\\n^Sent:\\s.*$/gim\n];\nfor (const p of replyStopPatterns) {\n  const idx = body.search(p);\n  if (idx > 40) { body = body.substring(0, idx); break; }\n}\n\n// Remove signatures\nconst sigStopPatterns = [\n  /\\n--\\s*\\n/i,\n  /\\n(Best regards|Kind regards|Warm regards|Regards|Sincerely|Cheers)\\s*,?\\s*\\n/i,\n  /\\n[-—]{3,}/\n];\nfor (const p of sigStopPatterns) {\n  const idx = body.search(p);\n  if (idx > 20) { body = body.substring(0, idx); break; }\n}\n\nconst body_clean = body\n// Normalize whitespace while preserving readability\n  .replace(/[ \\t]+/g, \" \")\n  .replace(/\\n{3,}/g, \"\\n\\n\")\n  .trim();\n\n\n\n// 3. Extract email/name from From field\nconst sender_email = (item.from_email || \"\").toLowerCase();\n\nconst sender_domain = sender_email.split(\"@\")[1] || \"\";\n\nconst sender_name = (item.from_name || \"\").trim();\n\nconst sender_first_name = sender_name.split(/\\s+/)[0] || \"\";\n\n// 4. Preview\nconst body_preview = body_clean.substring(0, 500);\n\nreturn {\n  ...item,\n  subject_clean,\n  body_clean,\n  body_preview,\n  sender_email,\n  sender_domain,\n  sender_name,\n  sender_first_name\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2208,
+        1296
+      ],
+      "id": "2f75ae14-e523-49be-8cbe-cc25a8cd6922",
+      "name": "Clean Email"
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 576,
+        "width": 1200,
+        "color": "#BFB5B5"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2320,
+        928
+      ],
+      "typeVersion": 1,
+      "id": "cd2a85f9-403e-40c3-92f7-8b1d55396199",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "content": "## Parse Classification\n**• Parses AI-generated JSON safely\n• Validates categories & confidence ranges\n• Applies schema normalization rules\n• Prevents malformed downstream routing\n• Fallback protection for parsing failures**",
+        "height": 416,
+        "width": 256,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1488,
+        1040
+      ],
+      "typeVersion": 1,
+      "id": "2a6e775f-cdff-4049-8b8b-bd48a3518719",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "content": "## Classify Email\n**• LLM-based intent analysis\n• Categorizes emails into:\n  LEAD, SUPPORT, SPAM, OTHER\n• Generates confidence scoring\n• Infers operational lead priority\n• Optimized for structured automation workflows** ",
+        "height": 416,
+        "width": 256,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1776,
+        1040
+      ],
+      "typeVersion": 1,
+      "id": "320c76c4-8904-4213-a873-d6632d8996fa",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const item = $input.item.json;\nconst original = $('Clean Email').item.json;\nlet parse_failed = false;\nlet parsed;\n\ntry {\n  const raw =\n    item.output?.[1]?.content?.[0]?.text   // Responses API\n    ?? item.choices?.[0]?.message?.content  // Chat Completions API\n    ?? item.text\n    ?? \"\";\n  \n\n  const match = raw.match(/\\{[\\s\\S]*\\}/);\n  parsed = JSON.parse(match ? match[0] : raw);\n} catch {\n  parse_failed = true;\n  parsed = { category: \"OTHER\", confidence: 0, reasoning: \"Failed to parse model response.\", suggested_priority: null };\n}\n\nconst ALLOWED_CAT = [\"LEAD\", \"SUPPORT\", \"SPAM\", \"OTHER\"];\nconst ALLOWED_PRI = [\"LOW\", \"MEDIUM\", \"HIGH\"];\n\nif (!ALLOWED_CAT.includes(parsed.category)) { parsed.category = \"OTHER\"; parse_failed = true; }\n\nparsed.confidence = Math.max(0, Math.min(1, Number(parsed.confidence) || 0));\nparsed.reasoning = typeof parsed.reasoning === \"string\" ? parsed.reasoning.slice(0, 300) : \"No reasoning provided.\";\n\nif (parsed.category !== \"LEAD\") {\n  parsed.suggested_priority = null;\n} else if (!ALLOWED_PRI.includes(parsed.suggested_priority)) {\n  parsed.suggested_priority = \"MEDIUM\";\n}\nreturn {\n  ...original,\n  classification: {\n    category: parsed.category,\n    confidence: parsed.confidence,\n    reasoning: parsed.reasoning,\n    suggested_priority: parsed.suggested_priority\n  },\n  parse_failed,\n  classified_at: new Date().toISOString()\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1408,
+        1296
+      ],
+      "id": "8704adb1-b477-4239-8fa5-e71e6cf2ac25",
+      "name": "Parse classification"
+    },
+    {
+      "parameters": {
+        "images": {
+          "values": [
+            {}
+          ]
+        },
+        "modelId": {
+          "__rl": true,
+          "value": "={{ $('Dynamic Config').item.json.classifier_model }}",
+          "mode": "id"
+        },
+        "responses": {
+          "values": [
+            {
+              "role": "system",
+              "content": "={{ $('Prompts').item.json.classification_system_prompt}}"
+            },
+            {
+              "content": "={{ $('Prompts').item.json.classification_user_prompt }}"
+            }
+          ]
+        },
+        "simplify": false,
+        "builtInTools": {},
+        "options": {
+          "instructions": "",
+          "store": false,
+          "temperature": "={{ $('Dynamic Config').item.json.classifier_temp }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        -1696,
+        1296
+      ],
+      "id": "c9df8ba3-9b8a-498d-84dc-72123db1fae9",
+      "name": "Classify email",
+      "credentials": {
+        "openAiApi": {
+          "id": "176zR0g1PtTSQwp0",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Prompts\n**• Centralized system & user prompts\n• Deterministic structured AI instructions\n• Strict JSON response enforcement\n• Category & priority constraints\n• Consistent downstream parsing behavior** ",
+        "height": 416,
+        "width": 224,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2032,
+        1040
+      ],
+      "typeVersion": 1,
+      "id": "faafb5c1-58a3-4c9d-abca-b9656d1d74f9",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $json.gmail_id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -1200,
+        1744
+      ],
+      "id": "6a760fd8-9f42-474f-8c85-e32cf0be8692",
+      "name": "Mark a message as read1",
+      "webhookId": "e15a5abe-7452-44c1-bc76-86e57db392d6",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wnFgwhE90UOmbOE2",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Mark a message as read\n**Marks successfully processed Gmail messages as read using the Gmail internal message ID** ",
+        "height": 352,
+        "width": 224
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1264,
+        1552
+      ],
+      "typeVersion": 1,
+      "id": "7888ed1d-035c-4399-aafd-a7ac73ed98d2",
+      "name": "Sticky Note13"
+    },
+    {
+      "parameters": {
+        "content": "## PHASE - 2\n\n## AI Classification & Semantic Processing Pipeline\n\n**• Email content sanitization\n• Semantic preprocessing & normalization\n• Centralized prompt orchestration\n• LLM-powered email classification\n• Structured JSON response enforcement\n• Confidence scoring & priority inference\n• Classification validation & fallback handling\n• Safe downstream AI routing preparation**",
+        "height": 304,
+        "width": 368,
+        "color": "#BFB5B5"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1664,
+        608
+      ],
+      "typeVersion": 1,
+      "id": "7c6cbdcf-30c5-4a1f-9ad3-31d5a81b3f45",
+      "name": "Sticky Note10"
+    },
+    {
+      "parameters": {
+        "content": "# 🟠 Pre-process",
+        "height": 80,
+        "width": 280,
+        "color": 4
+      },
+      "id": "e73699cb-ee79-483e-8697-373f05d09090",
+      "name": "Section_Preprocess",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -3472,
+        976
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Clean Email\n**• Removes reply chains & signatures\n• Sanitizes noisy email content\n• Extracts latest meaningful context\n• Reduces token usage & prompt noise\n• Improves downstream classification accuracy** ",
+        "height": 416,
+        "width": 224,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2272,
+        1040
+      ],
+      "typeVersion": 1,
+      "id": "51ce737f-5fdd-4937-baae-932f2d4b0355",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "# 🟦 Classify",
+        "height": 80,
+        "width": 232,
+        "color": 6
+      },
+      "id": "061fec5e-8bcb-4080-b967-c795b6a4a2bc",
+      "name": "Section_Classify",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1616,
+        944
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## PHASE - 3\n\n**Intelligent Routing & CRM Logging Pipeline\n\n• Multi-branch category routing\n• CRM sheet segregation\n• Idempotent message processing\n• Duplicate prevention safeguards\n• Explicit field mapping\n• Structured operational logging\n• Fallback error routing\n• Centralized audit trail generation.**",
+        "height": 256,
+        "width": 352,
+        "color": "#FF9875"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        32,
+        288
+      ],
+      "typeVersion": 1,
+      "id": "abf1cf30-3daa-40bf-ad21-e9e5ffc47098",
+      "name": "Sticky Note17"
+    },
+    {
+      "parameters": {
+        "content": "# 🔴 Log\nLookup → IF → Append per category, with explicit columns.\nDuplicate path emits a `duplicate_skipped=true` ",
+        "height": 140,
+        "width": 620,
+        "color": 3
+      },
+      "id": "29127886-8fea-41a1-9adb-50f6b7072518",
+      "name": "Section_Log",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# 🟢 Route\nSwitch by category. \nFallback → 'Log unknown category to errors'.",
+        "height": 128,
+        "color": 2
+      },
+      "id": "c841c1a8-86f1-4f91-8f8a-570c5cbf2e30",
+      "name": "Section_Route",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -608,
+        864
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Category Appends\n**Writes validated email records into the correct CRM sheet using explicit field mapping.**",
+        "height": 976,
+        "color": "#329696"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        544,
+        784
+      ],
+      "typeVersion": 1,
+      "id": "3d68ed49-0860-43de-ac2b-23eea46b34e3",
+      "name": "Sticky Note27"
+    },
+    {
+      "parameters": {
+        "content": "## Check existing\n**Prevents duplicate CRM entries by checking existing message_id records before append operations.** ",
+        "height": 848,
+        "color": "#329696"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -272,
+        800
+      ],
+      "typeVersion": 1,
+      "id": "72b37b45-c37f-466a-9720-14777e5f115e",
+      "name": "Sticky Note26"
+    },
+    {
+      "parameters": {
+        "content": "## Route by category\n**.Routes emails into LEAD, SUPPORT, SPAM, OTHER, or fallback error paths using classification output.**",
+        "height": 528,
+        "width": 224,
+        "color": "#329696"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -592,
+        1008
+      ],
+      "typeVersion": 1,
+      "id": "6f6c0529-9b40-4309-8c7a-7493171bf164",
+      "name": "Sticky Note25"
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 1248,
+        "width": 1808,
+        "color": "#FF9875"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -656,
+        608
+      ],
+      "typeVersion": 1,
+      "id": "69881765-1857-4f03-8e56-a169dab355b5",
+      "name": "Sticky Note16"
+    },
+    {
+      "parameters": {
+        "content": "## Append all_messages\n**Centralized audit log for all processed emails, classifications, parse states, and routing metadata.**",
+        "height": 400,
+        "width": 256,
+        "color": "#329696"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        864,
+        1008
+      ],
+      "typeVersion": 1,
+      "id": "47f9d63c-511c-4197-9531-cb566a2b7ca0",
+      "name": "Sticky Note20"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM",
+          "mode": "list",
+          "cachedResultName": "Lead Inbox CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 225854648,
+          "mode": "list",
+          "cachedResultName": "all_messages",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM/edit#gid=225854648"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "message_id": "={{ $('Route by category').item.json.messageId }}",
+            "category": "={{ $('Route by category').item.json.classification.category }}",
+            "sender_email": "={{ $('Route by category').item.json.sender_email }}",
+            "received_at": "={{ $('Route by category').item.json.receivedAt }}",
+            "sender_domain": "={{ $('Route by category').item.json.sender_domain }}",
+            "subject": "={{ $('Route by category').item.json.subject_clean }}",
+            "body_preview": "={{ $('Route by category').item.json.body_preview }}",
+            "confidence": "={{ $('Route by category').item.json.classification.confidence }}",
+            "priority": "={{ $('Route by category').item.json.classification.suggested_priority }}",
+            "status": "NEW",
+            "created_at": "={{ $('Route by category').item.json.classified_at }}",
+            "parse_failed": "={{ $('Route by category').item.json.parse_failed }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "message_id",
+              "displayName": "message_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "received_at",
+              "displayName": "received_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sender_email",
+              "displayName": "sender_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sender_domain",
+              "displayName": "sender_domain",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "body_preview",
+              "displayName": "body_preview",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "priority",
+              "displayName": "priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "confidence",
+              "displayName": "confidence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "parse_failed",
+              "displayName": "parse_failed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        944,
+        1200
+      ],
+      "id": "0d68c1fb-fde9-4635-ae73-cc24106d150c",
+      "name": "Append all messages in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1SjvP7Pqg1SrTi1S",
+          "name": "Google Sheets account crm"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM",
+          "mode": "list",
+          "cachedResultName": "Lead Inbox CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 782465533,
+          "mode": "list",
+          "cachedResultName": "other",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM/edit#gid=782465533"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "message_id": "={{ $('Route by category').item.json.messageId }}",
+            "received_at": "={{ $('Route by category').item.json.receivedAt }}",
+            "sender_email": "={{ $('Route by category').item.json.sender_email }}",
+            "subject": "{{ $('Route by category').item.json.subject_clean }",
+            "confidence": "={{ $('Route by category').item.json.classification.confidence }}",
+            "created_at": "={{ $('Route by category').item.json.classified_at }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "message_id",
+              "displayName": "message_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "received_at",
+              "displayName": "received_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sender_email",
+              "displayName": "sender_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "confidence",
+              "displayName": "confidence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        608,
+        1424
+      ],
+      "id": "388d53e2-8c86-4893-be99-e8ad3f5e9e63",
+      "name": "Append other in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1SjvP7Pqg1SrTi1S",
+          "name": "Google Sheets account crm"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM",
+          "mode": "list",
+          "cachedResultName": "Lead Inbox CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1637159616,
+          "mode": "list",
+          "cachedResultName": "support",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM/edit#gid=1637159616"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "message_id": "={{ $('Route by category').item.json.messageId }}",
+            "received_at": "={{ $('Route by category').item.json.receivedAt }}",
+            "sender_email": "={{ $('Route by category').item.json.sender_email }}",
+            "subject": "={{ $('Route by category').item.json.subject_clean }}",
+            "body_preview": "={{ $('Route by category').item.json.body_preview }}",
+            "confidence": "={{ $('Route by category').item.json.classification.confidence }}",
+            "created_at": "={{ $('Route by category').item.json.classified_at }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "message_id",
+              "displayName": "message_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "received_at",
+              "displayName": "received_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sender_email",
+              "displayName": "sender_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "body_preview",
+              "displayName": "body_preview",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "confidence",
+              "displayName": "confidence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        608,
+        1104
+      ],
+      "id": "99b8d7b3-558d-4b92-8ac6-131e0507834d",
+      "name": "Append Support in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1SjvP7Pqg1SrTi1S",
+          "name": "Google Sheets account crm"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM",
+          "mode": "list",
+          "cachedResultName": "Lead Inbox CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "message_id": "={{ $('Route by category').item.json.messageId }}",
+            "received_at": "={{ $('Route by category').item.json.receivedAt }}",
+            "sender_email": "={{ $('Route by category').item.json.sender_email }}",
+            "sender_domain": "={{ $('Route by category').item.json.sender_domain }}",
+            "subject": "={{ $('Route by category').item.json.subject_clean }}",
+            "body_preview": "={{ $('Route by category').item.json.body_preview }}",
+            "priority": "={{ $('Route by category').item.json.classification.suggested_priority }}",
+            "confidence": "={{ $('Route by category').item.json.classification.confidence }}",
+            "created_at": "={{ $('Route by category').item.json.classified_at }}",
+            "status": "NEW"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "message_id",
+              "displayName": "message_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "received_at",
+              "displayName": "received_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sender_email",
+              "displayName": "sender_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sender_domain",
+              "displayName": "sender_domain",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "body_preview",
+              "displayName": "body_preview",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "priority",
+              "displayName": "priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "confidence",
+              "displayName": "confidence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        608,
+        944
+      ],
+      "id": "e45443e2-d2b6-4edb-968e-c634d2df7e0e",
+      "name": "Append Lead in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1SjvP7Pqg1SrTi1S",
+          "name": "Google Sheets account crm"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM",
+          "mode": "list",
+          "cachedResultName": "Lead Inbox CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1963497068,
+          "mode": "list",
+          "cachedResultName": "spam",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM/edit#gid=1963497068"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "message_id": "={{ $('Route by category').item.json.messageId }}",
+            "received_at": "={{ $('Route by category').item.json.receivedAt }}",
+            "sender_email": "={{ $('Route by category').item.json.sender_email }}",
+            "subject": "={{ $('Route by category').item.json.subject_clean }}",
+            "confidence": "={{ $('Route by category').item.json.classification.confidence }}",
+            "created_at": "={{ $('Route by category').item.json.classified_at }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "message_id",
+              "displayName": "message_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "received_at",
+              "displayName": "received_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sender_email",
+              "displayName": "sender_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "confidence",
+              "displayName": "confidence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        608,
+        1264
+      ],
+      "id": "9086260b-831f-4fe1-981a-243c37c4a76a",
+      "name": "Append spam in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1SjvP7Pqg1SrTi1S",
+          "name": "Google Sheets account crm"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Duplicate Skip\n**Stops duplicate emails from being re-inserted while preserving execution traceability.**",
+        "height": 864,
+        "color": "#329696"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        272,
+        800
+      ],
+      "typeVersion": 1,
+      "id": "ef12a032-bfcb-49bb-aaf3-bd668a555d04",
+      "name": "Sticky Note12"
+    },
+    {
+      "parameters": {
+        "content": "## Duplicate Validation \n**Detects existing message_ids and safely short-circuits duplicate workflow executions.** ",
+        "height": 880,
+        "width": 208,
+        "color": "#329696"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        16,
+        800
+      ],
+      "typeVersion": 1,
+      "id": "15ca3d83-c177-4299-8ed0-6ae50a496d16",
+      "name": "Sticky Note11"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "97e16894-9227-43f5-943d-1b1bb298eb5d",
+              "name": "duplicate_skipped",
+              "value": "true",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        336,
+        1424
+      ],
+      "id": "f1680dd5-f76a-41e1-ae36-78974ca479b5",
+      "name": "Skip Other Duplicate"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "97e16894-9227-43f5-943d-1b1bb298eb5d",
+              "name": "duplicate_skipped",
+              "value": "true",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        336,
+        1264
+      ],
+      "id": "aebbac2b-2b6d-4527-82eb-cec8c2c53d54",
+      "name": "Skip Spam Duplicate"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "97e16894-9227-43f5-943d-1b1bb298eb5d",
+              "name": "duplicate_skipped",
+              "value": "true",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        336,
+        1104
+      ],
+      "id": "1cb92300-2634-4318-8d02-e80ef451991b",
+      "name": "Skip Support Duplicate"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "97e16894-9227-43f5-943d-1b1bb298eb5d",
+              "name": "duplicate_skipped",
+              "value": "true",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        336,
+        944
+      ],
+      "id": "df80e4b9-f0ba-4b97-afa8-94af5960b517",
+      "name": "Skip Lead Duplicate"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "84ea5be1-4bf4-43f8-a0e6-1ee1feb46056",
+              "leftValue": "={{ $items(\"Check Existing Spam\").filter(i => i.json.message_id).length > 0 }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        64,
+        1456
+      ],
+      "id": "a4b3ec94-f47b-4266-b1b2-0d18f408a66b",
+      "name": "Duplicate Others",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "84ea5be1-4bf4-43f8-a0e6-1ee1feb46056",
+              "leftValue": "={{ $items(\"Check Existing Spam\").filter(i => i.json.message_id).length > 0 }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        64,
+        1136
+      ],
+      "id": "5cd26a7c-894e-40a8-9e87-1d714f975d5a",
+      "name": "Duplicate Support"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "84ea5be1-4bf4-43f8-a0e6-1ee1feb46056",
+              "leftValue": "={{ $items(\"Check Existing Spam\").filter(i => i.json.message_id).length > 0 }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        64,
+        976
+      ],
+      "id": "f99cbeac-2390-4dd9-9d70-4efecd9c5faf",
+      "name": "Duplicate Lead"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "84ea5be1-4bf4-43f8-a0e6-1ee1feb46056",
+              "leftValue": "={{ $items(\"Check Existing Spam\").filter(i => i.json.message_id).length > 0 }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        64,
+        1296
+      ],
+      "id": "92e79c59-5fe6-442c-8965-ca5a7fb3a658",
+      "name": "Duplicate Spam"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM",
+          "mode": "list",
+          "cachedResultName": "Lead Inbox CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1807800318,
+          "mode": "list",
+          "cachedResultName": "fallback",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM/edit#gid=1807800318"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "message_id": "={{ $('Route by category').item.json.messageId }}",
+            "received_at": "={{ $('Route by category').item.json.receivedAt }}",
+            "error_stage": "routing_fallback",
+            "error_message": "Unknown category or routing failure",
+            "raw_payload": "={{ JSON.stringify($('Route by category').item.json) }}",
+            "created_at": "={{$now}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "message_id",
+              "displayName": "message_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "received_at",
+              "displayName": "received_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "error_stage",
+              "displayName": "error_stage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "error_message",
+              "displayName": "error_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "raw_payload",
+              "displayName": "raw_payload",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        608,
+        1584
+      ],
+      "id": "f006f485-dda0-4c61-bf96-3a05ea4c8f1e",
+      "name": "Append FallBack Error",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1SjvP7Pqg1SrTi1S",
+          "name": "Google Sheets account crm"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM",
+          "mode": "list",
+          "cachedResultName": "Lead Inbox CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 782465533,
+          "mode": "list",
+          "cachedResultName": "other",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM/edit#gid=782465533"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "message_id",
+              "lookupValue": "{{ $json.messageId }"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -192,
+        1456
+      ],
+      "id": "c4eeb760-e3ff-4916-b40a-c1555a90b5ba",
+      "name": "Check Existing Others",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1SjvP7Pqg1SrTi1S",
+          "name": "Google Sheets account crm"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM",
+          "mode": "list",
+          "cachedResultName": "Lead Inbox CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1963497068,
+          "mode": "list",
+          "cachedResultName": "spam",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM/edit#gid=1963497068"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "message_id",
+              "lookupValue": "={{ $json.messageId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -192,
+        1296
+      ],
+      "id": "3e313af9-5b1d-49c3-9d87-ded4521a3902",
+      "name": "Check Existing Spam",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1SjvP7Pqg1SrTi1S",
+          "name": "Google Sheets account crm"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM",
+          "mode": "list",
+          "cachedResultName": "Lead Inbox CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1637159616,
+          "mode": "list",
+          "cachedResultName": "support",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM/edit#gid=1637159616"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "=message_id",
+              "lookupValue": "{{ $json.messageId }"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -192,
+        1136
+      ],
+      "id": "c11dc33d-cbb7-4169-8e10-1a4481b4fdd7",
+      "name": "Check Existing Support",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1SjvP7Pqg1SrTi1S",
+          "name": "Google Sheets account crm"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM",
+          "mode": "list",
+          "cachedResultName": "Lead Inbox CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "message_id",
+              "lookupValue": "{{ $json.messageId }"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -192,
+        976
+      ],
+      "id": "b88499c3-183c-46e8-a969-51df5d2b1706",
+      "name": "Check Existing Lead",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1SjvP7Pqg1SrTi1S",
+          "name": "Google Sheets account crm"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "33f3bb14-60e1-46e6-be94-9c79144f546e",
+                    "leftValue": "={{$json.classification.category}}",
+                    "rightValue": "LEAD",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "LEAD"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "4cc8f5a8-5c02-447c-b9c2-61790890e77b",
+                    "leftValue": "={{$json.classification.category}}",
+                    "rightValue": "SUPPORT",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "SUPPORT"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "26110ca0-ddbd-4b4d-a2e3-8e5eaf0147e0",
+                    "leftValue": "={{$json.classification.category}}",
+                    "rightValue": "SPAM",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "SPAM"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "id": "881c957e-31e8-49da-b0f9-3764d40ff920",
+                    "leftValue": "={{$json.classification.category}}",
+                    "rightValue": "OTHER",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "OTHER"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "Fallback"
+        }
+      },
+      "id": "50be110f-f114-4984-8fda-ad236bee9ec4",
+      "name": "Route by category",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        -544,
+        1248
+      ],
+      "notesInFlow": true,
+      "notes": "Routes on $json.category. Fallback output (index 4) goes to the errors path so unknown categories don't silently disappear."
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e0f5b37f-9329-419f-a9e8-0f6e81f8d2df",
+              "name": "draft_system_prompt",
+              "value": "You are a sales development representative for Grootan Technologies.  \nWrite warm, professional lead follow-up emails.  \nRULES: \n- 80–150 words \n- Address sender by first name \n- Never invent facts \n- Never promise pricing or timelines \n- If context is limited, ask clarifying questions \n- Propose a 20-minute discovery call \n- Ask for 2–3 suitable time slots \n- Professional but conversational tone \n- End with the provided signature \n- Return plain text only",
+              "type": "string"
+            },
+            {
+              "id": "4a2f363d-57d7-4c72-b181-bf3672b997c0",
+              "name": "fixed_signature",
+              "value": "Best regards,  \n\nSales Team Grootan Technologies \nhttps://grootan.com",
+              "type": "string"
+            },
+            {
+              "id": "ec207abb-c478-46fb-a5e2-b1b6f3cf6698",
+              "name": "draft_user_prompt",
+              "value": "=Generate a lead follow-up email.  \nSender Name: {{ $('Route by category1').item.json.sender_first_name }}  \nSender Domain: {{ $('Route by category1').item.json.sender_domain }}  \nPriority: {{ $('Route by category1').item.json.classification.suggested_priority }} Subject: {{ $('Route by category1').item.json.subject_clean }}  \nEmail Body: {{ $('Route by category1').item.json.body_clean }}  \nSignature: {{ $json.fixed_signature }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1680,
+        1200
+      ],
+      "id": "3ff293b6-081e-4ef9-8514-6100ba23d278",
+      "name": "Lead Reply Prompts"
+    },
+    {
+      "parameters": {
+        "content": "## Lead Engagement Automation\n**• Centralized AI reply defaults\n• Structured prompt composition\n• Personalized lead-response generation\n• Safe draft-only Gmail workflow\n• Human-in-the-loop sales process\n• Slack lead visibility & alerting** ",
+        "height": 400,
+        "width": 368,
+        "color": "#644B6E"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1472,
+        992
+      ],
+      "typeVersion": 1,
+      "id": "faa93548-7cbd-44e5-b7aa-22f9ba211421",
+      "name": "Sticky Note14"
+    },
+    {
+      "parameters": {
+        "images": {
+          "values": [
+            {}
+          ]
+        },
+        "modelId": {
+          "__rl": true,
+          "value": "={{ $('Dynamic Config').item.json.draft_model }}",
+          "mode": "id"
+        },
+        "responses": {
+          "values": [
+            {
+              "role": "system",
+              "content": "={{ $('Lead Reply Prompts').item.json.draft_system_prompt }}"
+            },
+            {
+              "content": "={{ $('Lead Reply Prompts').item.json.draft_user_prompt }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "store": false,
+          "temperature": "={{ $('Dynamic Config').item.json.draft_temp }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        1952,
+        1200
+      ],
+      "id": "6db0ead1-4196-4dde-853a-dfdee68a40fc",
+      "name": "Generate lead draft",
+      "credentials": {
+        "openAiApi": {
+          "id": "176zR0g1PtTSQwp0",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "={{ $('Route by category1').item.json.subject.startsWith('Re:') ? $('Route by category1').item.json.subject : 'Re: ' + $('Route by category1').item.json.subject }}",
+        "message": "={{ $('Generate lead draft').item.json.output[0].content[0].text }}",
+        "options": {
+          "threadId": "={{ $('Route by category1').item.json.threadId }}",
+          "sendTo": "={{ $('Route by category1').item.json.sender_email }}"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2352,
+        1120
+      ],
+      "id": "71a3331a-dd95-4945-bc77-600abd6e4f49",
+      "name": "Create gmail draft",
+      "webhookId": "a87698e7-d54a-4d47-9eaf-870d037db634",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wnFgwhE90UOmbOE2",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "41fc94fe-d79d-4c57-b413-52a9ee262baa",
+              "name": "fixed_signature",
+              "value": "={{ $('Dynamic Config').item.json.signature }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1504,
+        1200
+      ],
+      "id": "d4da64b8-d1b4-45cd-8e73-12edbd9c0ab5",
+      "name": "Lead reply defaults"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "={{ $('Dynamic Config').item.json.slack_leads_channel }}",
+          "mode": "id"
+        },
+        "text": "={{ `🚀 New Lead — ${ $('Route by category').item.json.classification.suggested_priority } | Score: ${ $('Compute Lead Score').item.json.lead_score } (${ $('Compute Lead Score').item.json.lead_score_label })` }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        2352,
+        1296
+      ],
+      "id": "b00b2697-b2b3-4cea-b5d6-6db86fc28234",
+      "name": "Send a message",
+      "webhookId": "349d3876-20ab-412f-afc1-3759d28d4380",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "qgFE43ThoZv9LK2G",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Lead Notification & Drafting\n**• Gmail Draft creation only\n• Thread-aware reply handling\n• Slack lead escalation message\n• Confidence & priority visibility\n• Parallel execution for sales ops\n• No outbound auto-send risk**",
+        "height": 640,
+        "width": 288,
+        "color": "#644B6E"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2256,
+        896
+      ],
+      "typeVersion": 1,
+      "id": "fcd4f1fe-eeac-42df-bd07-6fc3afc85f90",
+      "name": "Sticky Note15"
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 864,
+        "width": 1232,
+        "color": "#DF8181"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1392,
+        768
+      ],
+      "typeVersion": 1,
+      "id": "ad297cda-6603-413f-8b55-fce268008c68",
+      "name": "Sticky Note18"
+    },
+    {
+      "parameters": {
+        "content": "## Generate Lead Draft\n**• Uses structured sales prompts\n• Personalized using sender metadata\n• Discovery-call oriented response\n• No hallucinated pricing/promises\n• Clarifying-question fallback logic\n• Consistent Grootan communication tone**",
+        "height": 400,
+        "width": 304,
+        "color": "#644B6E"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1904,
+        992
+      ],
+      "typeVersion": 1,
+      "id": "c35cd1cf-353b-48df-925c-42bbe4fae6ef",
+      "name": "Sticky Note38"
+    },
+    {
+      "parameters": {
+        "content": "## PHASE - 4\n\n## AI Lead Engagement & Sales Assist Automation\n\n**• AI-powered lead reply drafting\n• Structured prompt orchestration\n• Personalized outbound responses\n• Human-in-the-loop Gmail draft workflow\n• Slack-based sales visibility\n• Safe non-autonomous communication design\n• Thread-aware reply continuity\n• Sales operations acceleration**",
+        "height": 304,
+        "width": 592,
+        "color": "#DF8181"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1664,
+        416
+      ],
+      "typeVersion": 1,
+      "id": "c83c705d-4e2a-4245-950d-14f4f1103ad1",
+      "name": "Sticky Note19"
+    },
+    {
+      "parameters": {
+        "content": "# 🟣 Draft + Notify (LEAD branch only)\nDraft reply → **(parallel)** Create Gmail draft & Post lead card.\nBoth must complete before the execution finishes.",
+        "height": 140,
+        "width": 632
+      },
+      "id": "0c8d2ca3-be7f-40ca-a10b-647a624d2165",
+      "name": "Section_DraftNotify",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        784
+      ]
+    },
+    {
+      "parameters": {
+        "content": "# 🔴 Error Handler\nError Trigger → Build error row → Append errors tab + Slack alert (parallel).\nBoth writers have `retryOnFail=true, maxTries=3, waitBetweenTries=5000`. Never re-triggers the main workflow.",
+        "height": 284,
+        "width": 520,
+        "color": 3
+      },
+      "id": "93301526-1a48-4eee-bf21-f9b3d76f34fb",
+      "name": "Section_Error",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        6320,
+        1680
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cfg-001",
+              "name": "crm_sheet_id",
+              "value": "1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM",
+              "type": "string"
+            },
+            {
+              "id": "cfg-002",
+              "name": "classifier_model",
+              "value": "llama-3.3-70b-versatile",
+              "type": "string"
+            },
+            {
+              "id": "cfg-003",
+              "name": "classifier_temp",
+              "value": "0",
+              "type": "number"
+            },
+            {
+              "id": "cfg-004",
+              "name": "draft_model",
+              "value": "llama-3.3-70b-versatile",
+              "type": "string"
+            },
+            {
+              "id": "cfg-005",
+              "name": "draft_temp",
+              "value": "0.2",
+              "type": "number"
+            },
+            {
+              "id": "cfg-006",
+              "name": "slack_leads_channel",
+              "value": "C0B5A5PB0HW",
+              "type": "string"
+            },
+            {
+              "id": "cfg-007",
+              "name": "confidence_threshold",
+              "value": "0.4",
+              "type": "number"
+            },
+            {
+              "id": "cfg-008",
+              "name": "max_body_chars",
+              "value": "3000",
+              "type": "number"
+            },
+            {
+              "id": "cfg-009",
+              "name": "signature",
+              "value": "Best regards,\nSales Team\nGrootan Technologies\nhttps://grootan.com",
+              "type": "string"
+            },
+            {
+              "id": "cfg-010",
+              "name": "workflow_version",
+              "value": "0.9-uniqueness",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -4080,
+        1296
+      ],
+      "id": "332acbcd-ea8a-4cb6-9125-1df0db567dfe",
+      "name": "Dynamic Config"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "meta-001",
+              "name": "execution_id",
+              "value": "={{ $execution.id }}",
+              "type": "string"
+            },
+            {
+              "id": "meta-002",
+              "name": "processing_start_ms",
+              "value": "={{ Date.now() }}",
+              "type": "number"
+            },
+            {
+              "id": "meta-003",
+              "name": "payload_hash",
+              "value": "={{ Buffer.from($json.message_id + $json.subject + $json.sender_email).toString('base64').slice(0,16) }}",
+              "type": "string"
+            },
+            {
+              "id": "meta-004",
+              "name": "workflow_version",
+              "value": "={{ $('Dynamic Config').item.json.workflow_version }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3104,
+        1312
+      ],
+      "id": "3fd459e0-aece-4bc5-a7f7-c68d53e87a48",
+      "name": "Track Execution Metadata"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM",
+          "mode": "list",
+          "cachedResultName": "Lead Inbox CRM"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 225854648,
+          "mode": "list",
+          "cachedResultName": "all_messages"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "message_id",
+              "lookupValue": "={{ $json.message_id }}"
+            }
+          ]
+        },
+        "options": {
+          "returnFirstMatch": true
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -2912,
+        1312
+      ],
+      "id": "79ecd7a5-7214-4ca2-89aa-45b40f831b78",
+      "name": "Early Dedup Gate",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1SjvP7Pqg1SrTi1S",
+          "name": "Google Sheets account crm"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "claim-001",
+              "leftValue": "={{ $items('Early Dedup Gate').length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2736,
+        1312
+      ],
+      "id": "74ecdc01-3f4d-4e81-bf12-72aa896a01e1",
+      "name": "Already Processed?"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "skip-001",
+              "name": "skipped_reason",
+              "value": "duplicate_message_id_early_gate",
+              "type": "string"
+            },
+            {
+              "id": "skip-002",
+              "name": "message_id",
+              "value": "={{ $('Track Execution Metadata').item.json.message_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2496,
+        1456
+      ],
+      "id": "b72b37d0-15ae-4a1d-9b55-0ef36f04650d",
+      "name": "Skip Already Processed"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM",
+          "mode": "list",
+          "cachedResultName": "Lead Inbox CRM"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 225854648,
+          "mode": "list",
+          "cachedResultName": "all_messages"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "message_id": "={{ $('Normalize email payload').item.json.message_id }}",
+            "received_at": "={{ $('Normalize email payload').item.json.receivedAt }}",
+            "sender_email": "={{ $('Normalize email payload').item.json.sender_email }}",
+            "sender_domain": "={{ $('Normalize email payload').item.json.sender_domain }}",
+            "subject": "={{ $('Normalize email payload').item.json.subject_clean || $('Normalize email payload').item.json.subject }}",
+            "body_preview": "={{ ($('Normalize email payload').item.json.body || '').slice(0,300) }}",
+            "category": "PENDING",
+            "confidence": "0",
+            "parse_failed": "FALSE",
+            "duplicate_skipped": "FALSE",
+            "execution_id": "={{ $('Track Execution Metadata').item.json.execution_id }}",
+            "payload_hash": "={{ $('Track Execution Metadata').item.json.payload_hash }}",
+            "workflow_version": "={{ $('Dynamic Config').item.json.workflow_version }}",
+            "created_at": "={{ new Date().toISOString() }}"
+          },
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -2496,
+        1296
+      ],
+      "id": "ee4bbabf-63fd-480f-9db3-efb101b9712e",
+      "name": "Write Claim Token",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1SjvP7Pqg1SrTi1S",
+          "name": "Google Sheets account crm"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "lc-001",
+              "leftValue": "={{ $json.classification.confidence }}",
+              "rightValue": "={{ $('Dynamic Config').item.json.confidence_threshold }}",
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1040,
+        1296
+      ],
+      "id": "71e214c8-84a0-423a-a06a-eded45dfb190",
+      "name": "Confidence Gate"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM",
+          "mode": "list",
+          "cachedResultName": "Lead Inbox CRM"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "manual_review",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "message_id": "={{ $json.message_id }}",
+            "sender_email": "={{ $json.sender_email }}",
+            "subject": "={{ $json.subject_clean }}",
+            "body_preview": "={{ $json.body_preview }}",
+            "ai_category": "={{ $json.classification.category }}",
+            "confidence": "={{ $json.classification.confidence }}",
+            "reasoning": "={{ $json.classification.reasoning }}",
+            "flagged_reason": "low_confidence",
+            "created_at": "={{ new Date().toISOString() }}"
+          },
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -800,
+        1408
+      ],
+      "id": "319ab99b-07e5-415c-a65d-5bef95362edf",
+      "name": "Flag for Manual Review",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1SjvP7Pqg1SrTi1S",
+          "name": "Google Sheets account crm"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst priorityScore = { HIGH: 1.0, MEDIUM: 0.6, LOW: 0.3 };\nconst classification = $('Parse classification').item.json.classification;\nconst priority = classification.suggested_priority || 'LOW';\nconst confidence = classification.confidence || 0;\nconst leadScore = Math.round(confidence * (priorityScore[priority] || 0.3) * 100);\n\nconst processingMs = Date.now() - ($('Track Execution Metadata').item.json.processing_start_ms || Date.now());\n\nreturn [{\n  json: {\n    ...$input.item.json,\n    lead_score: leadScore,\n    lead_score_label: leadScore >= 70 ? 'HOT' : leadScore >= 40 ? 'WARM' : 'COLD',\n    processing_ms: processingMs\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1024,
+        880
+      ],
+      "id": "40db8715-fe1a-4b3f-8260-0ac603c4cf59",
+      "name": "Compute Lead Score"
+    },
+    {
+      "parameters": {
+        "content": "## Dynamic Config — zero hardcoding\nAll model names, temps, sheet ID, Slack channel, thresholds in ONE node.\nChange once, applies everywhere.",
+        "height": 200,
+        "width": 380,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -4208,
+        1040
+      ],
+      "id": "177f6618-00ca-4344-8a10-d6bee65493df",
+      "name": "Sticky_uniq-sticky-1"
+    },
+    {
+      "parameters": {
+        "content": "## Early Dedup Gate (pre-classification)\nReads all_messages tab BEFORE calling LLM.\nWriting PENDING claim token after check — prevents duplicate LLM spend.\nRace condition window: ~200ms (Sheets read latency). Acceptable for 1-min poll.\nFor true zero-race: swap Sheets for Redis SETNX.",
+        "height": 392,
+        "width": 204,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2960,
+        880
+      ],
+      "id": "82115ae6-8d0a-46f9-bf99-af23aaafef01",
+      "name": "Sticky_uniq-sticky-2"
+    },
+    {
+      "parameters": {
+        "content": "## Confidence Gate (circuit breaker)\nEmails where AI confidence < 0.4 are NOT routed — flagged to manual_review tab.\nPrevents low-quality classifications reaching the CRM silently.",
+        "height": 216,
+        "width": 252,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1104,
+        1008
+      ],
+      "id": "7f0d0772-0506-486c-965a-15a50414b462",
+      "name": "Sticky_uniq-sticky-3"
+    },
+    {
+      "parameters": {
+        "content": "## Lead Scoring\nScore = confidence × priority_weight × 100\nHOT ≥70, WARM ≥40, COLD <40\nStored in leads tab + surfaced in Slack card for rep prioritisation.",
+        "height": 200,
+        "width": 380,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        864,
+        640
+      ],
+      "id": "20128d8b-ce92-43c3-900c-2dfb0a563808",
+      "name": "Sticky_uniq-sticky-4"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Watch inbox": {
+      "main": [
+        [
+          {
+            "node": "Normalize email payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize email payload": {
+      "main": [
+        [
+          {
+            "node": "Track Execution Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prompts": {
+      "main": [
+        [
+          {
+            "node": "Classify email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clean Email": {
+      "main": [
+        [
+          {
+            "node": "Prompts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse classification": {
+      "main": [
+        [
+          {
+            "node": "Confidence Gate",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Mark a message as read1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classify email": {
+      "main": [
+        [
+          {
+            "node": "Parse classification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append other in sheet": {
+      "main": [
+        [
+          {
+            "node": "Append all messages in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append Support in sheet": {
+      "main": [
+        [
+          {
+            "node": "Append all messages in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append Lead in sheet": {
+      "main": [
+        [
+          {
+            "node": "Compute Lead Score",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append spam in sheet": {
+      "main": [
+        [
+          {
+            "node": "Append all messages in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Duplicate Others": {
+      "main": [
+        [
+          {
+            "node": "Skip Other Duplicate",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append other in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Duplicate Support": {
+      "main": [
+        [
+          {
+            "node": "Skip Support Duplicate",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append Support in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Duplicate Lead": {
+      "main": [
+        [
+          {
+            "node": "Skip Lead Duplicate",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append Lead in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Duplicate Spam": {
+      "main": [
+        [
+          {
+            "node": "Skip Spam Duplicate",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append spam in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append FallBack Error": {
+      "main": [
+        [
+          {
+            "node": "Append all messages in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Existing Others": {
+      "main": [
+        [
+          {
+            "node": "Duplicate Others",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Existing Spam": {
+      "main": [
+        [
+          {
+            "node": "Duplicate Spam",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Existing Support": {
+      "main": [
+        [
+          {
+            "node": "Duplicate Support",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Existing Lead": {
+      "main": [
+        [
+          {
+            "node": "Duplicate Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by category": {
+      "main": [
+        [
+          {
+            "node": "Check Existing Lead",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Check Existing Support",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Check Existing Spam",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Check Existing Others",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append FallBack Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead Reply Prompts": {
+      "main": [
+        [
+          {
+            "node": "Generate lead draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate lead draft": {
+      "main": [
+        [
+          {
+            "node": "Create gmail draft",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead reply defaults": {
+      "main": [
+        [
+          {
+            "node": "Lead Reply Prompts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Track Execution Metadata": {
+      "main": [
+        [
+          {
+            "node": "Early Dedup Gate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Early Dedup Gate": {
+      "main": [
+        [
+          {
+            "node": "Already Processed?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Already Processed?": {
+      "main": [
+        [
+          {
+            "node": "Write Claim Token",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Skip Already Processed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Claim Token": {
+      "main": [
+        [
+          {
+            "node": "Clean Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confidence Gate": {
+      "main": [
+        [
+          {
+            "node": "Route by category",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Flag for Manual Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compute Lead Score": {
+      "main": [
+        [
+          {
+            "node": "Lead Reply Prompts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "7656c740-415f-4784-bc53-1e88bd1d1598",
+  "meta": {
+    "instanceId": "f91ee16137fc0b3b8b4f816350ad8ce6321c2a8bbdb1ac02b686ae39644faa85"
+  },
+  "id": "BbgHYuC3HfCAORyc",
+  "tags": [
+    {
+      "updatedAt": "2026-05-17T12:35:49.965Z",
+      "createdAt": "2026-05-17T12:35:49.965Z",
+      "id": "9DdkRio6FFt0KDAN",
+      "name": "phase-1"
+    },
+    {
+      "updatedAt": "2026-05-18T20:20:17.612Z",
+      "createdAt": "2026-05-18T20:20:17.612Z",
+      "id": "DwZiobfGzVfGQlJn",
+      "name": "batch26_intern"
+    },
+    {
+      "updatedAt": "2026-05-17T12:35:49.949Z",
+      "createdAt": "2026-05-17T12:35:49.949Z",
+      "id": "HP8bIX2EyHTE8tjn",
+      "name": "training"
+    },
+    {
+      "updatedAt": "2026-05-20T00:07:08.323Z",
+      "createdAt": "2026-05-20T00:07:08.323Z",
+      "id": "jbnaPX0FlZoNVGGj",
+      "name": "LeadInbox"
+    },
+    {
+      "updatedAt": "2026-05-20T00:07:08.303Z",
+      "createdAt": "2026-05-20T00:07:08.303Z",
+      "id": "sDZhwhPKimwdhRPb",
+      "name": "Training"
+    }
+  ]
+}

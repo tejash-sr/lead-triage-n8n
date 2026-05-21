@@ -1,0 +1,293 @@
+{
+  "name": "LeadInboxTriageBot_SR",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "maxResults": 1,
+        "filters": {
+          "labelIds": [
+            "INBOX"
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -64,
+        288
+      ],
+      "id": "1846e42a-3a45-4b76-91ca-6f995781035d",
+      "name": "Watch inbox",
+      "retryOnFail": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wnFgwhE90UOmbOE2",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b689c1ae-5c5e-4987-a130-28914b8aea18",
+              "name": "gmail_id",
+              "value": "={{ $json.id || \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "c986fb8b-c6ff-4418-883c-a24058176c44",
+              "name": "threadId",
+              "value": "={{ $json.threadId || \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "2a1e0b09-39e8-4270-9547-9edb40246c8e",
+              "name": "messageId",
+              "value": "={{ $json.messageId || \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "4277a33b-9365-4105-9eff-169bde281708",
+              "name": "subject",
+              "value": "={{ $json.subject || \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "485b1e25-85c0-41aa-a189-d1d30946631a",
+              "name": "body",
+              "value": "={{ $json.text || \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "9c13aae8-5cee-4ea4-9291-eabbfc50db1e",
+              "name": "from_email",
+              "value": "={{ $json.from.value[0].address || \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "172aba08-06c0-4378-8672-40dd4d881aa5",
+              "name": "from_name",
+              "value": "={{ $json.from.value[0].name || \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "5835d429-7331-4851-ab41-a4b34c85690d",
+              "name": "to_email",
+              "value": "={{ $json.to.value[0].address || \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "923710f8-d8b0-411d-babd-97599d0f90d9",
+              "name": "sender_domain",
+              "value": "={{ ($json.from.value[0].address || \"\").split(\"@\")[1] || \"\" }}",
+              "type": "string"
+            },
+            {
+              "id": "a7f28ba7-337c-4e08-92a5-e1cce13b7a41",
+              "name": "receivedAt",
+              "value": "={{ new Date().toISOString() }}",
+              "type": "string"
+            },
+            {
+              "id": "91f9108a-c2ac-4695-b230-e29c64847d2e",
+              "name": "raw_from",
+              "value": "={{ $json.from.text || \"\" }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {
+          "dotNotation": false
+        }
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        288
+      ],
+      "id": "fe34b2f9-0465-406a-981d-b86d289d2390",
+      "name": "Normalize email payload"
+    },
+    {
+      "parameters": {
+        "content": "## Gmail Watcher\n\n**• Polls inbox every minute\n• Detects new inbound emails\n• Filters INBOX messages only\n• Entry point for workflow execution\n• Controlled ingestion pipeline**",
+        "height": 400,
+        "width": 224
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -112,
+        48
+      ],
+      "typeVersion": 1,
+      "id": "8430a2f6-5863-4a5f-a04f-eab5d934f0d0",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Normalize & Extract Email\n**• Extracts structured email fields, Standardizes sender metadata\n• Builds internal processing schema\n• Cleans inconsistent Gmail payloads, Prepares data for downstream AI logic** ",
+        "height": 400,
+        "width": 224
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        144,
+        48
+      ],
+      "typeVersion": 1,
+      "id": "861ed6bc-8de7-4969-9310-426f40e19461",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Mark a message as read\n**• Marks processed emails as read, Prevents repeated manual review\n• Uses Gmail internal message ID, Maintains inbox processing hygiene\n• Reduces operational duplication** ",
+        "height": 400,
+        "width": 224
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        400,
+        48
+      ],
+      "typeVersion": 1,
+      "id": "96b3ee91-e1d4-442b-b837-37510c680f39",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $json.gmail_id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        464,
+        288
+      ],
+      "id": "85951561-7e33-45e7-a2f0-8cee3be09381",
+      "name": "Mark a message as read",
+      "webhookId": "e15a5abe-7452-44c1-bc76-86e57db392d6",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "wnFgwhE90UOmbOE2",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "\n",
+        "height": 512,
+        "width": 880,
+        "color": "#C17B7B"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -192,
+        -16
+      ],
+      "typeVersion": 1,
+      "id": "8fed81e1-a680-401a-bdc3-2a011031ff8b",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## PHASE - 1 \n## Email Ingestion & Normalization Pipeline\n\n**• Gmail inbox polling trigger\n• Real-time inbound email ingestion\n• Metadata extraction & normalization\n• Stable internal payload schema\n• Sender/domain parsing\n• Automated message state handling\n• Preprocessing foundation for AI routing**",
+        "height": 256,
+        "width": 368,
+        "color": "#C17B7B"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        64,
+        -288
+      ],
+      "typeVersion": 1,
+      "id": "fd4236e2-8132-4ee8-be40-30daea79dced",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "# 🟡 Trigger",
+        "height": 80,
+        "width": 200,
+        "color": 5
+      },
+      "id": "c958fc98-1398-4c3c-9464-5e2a501fca9d",
+      "name": "Section_Trigger",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        144,
+        -400
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Watch inbox": {
+      "main": [
+        [
+          {
+            "node": "Normalize email payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize email payload": {
+      "main": [
+        [
+          {
+            "node": "Mark a message as read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "2fc5ca32-355a-4e90-ac74-3808995b2b6d",
+  "meta": {
+    "instanceId": "f91ee16137fc0b3b8b4f816350ad8ce6321c2a8bbdb1ac02b686ae39644faa85"
+  },
+  "id": "frIKH7E4frasLmeS",
+  "tags": [
+    {
+      "updatedAt": "2026-05-17T12:35:49.965Z",
+      "createdAt": "2026-05-17T12:35:49.965Z",
+      "id": "9DdkRio6FFt0KDAN",
+      "name": "phase-1"
+    },
+    {
+      "updatedAt": "2026-05-18T20:20:17.612Z",
+      "createdAt": "2026-05-18T20:20:17.612Z",
+      "id": "DwZiobfGzVfGQlJn",
+      "name": "batch26_intern"
+    },
+    {
+      "updatedAt": "2026-05-17T12:35:49.949Z",
+      "createdAt": "2026-05-17T12:35:49.949Z",
+      "id": "HP8bIX2EyHTE8tjn",
+      "name": "training"
+    }
+  ]
+}

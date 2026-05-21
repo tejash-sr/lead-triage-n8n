@@ -1,0 +1,354 @@
+{
+  "name": "LeadInboxTriageBot_ErrorHandler_SR",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        176,
+        240
+      ],
+      "id": "ed047748-338d-474a-9c49-8bcdee86b88a",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "317fa124-9e9b-4e23-aa41-5d8985355ce8",
+              "name": "message_id",
+              "value": "={{ $json.execution?.error?.context?.item?.json?.messageId || 'UNKNOWN' }}",
+              "type": "string"
+            },
+            {
+              "id": "fd7d78e2-588d-4326-99ab-652375eb5ffb",
+              "name": "error_stage",
+              "value": "={{ $json.execution?.lastNodeExecuted || 'UNKNOWN_NODE' }}",
+              "type": "string"
+            },
+            {
+              "id": "afac7176-a1fa-44ee-a4cb-4ec5b3ceb30d",
+              "name": "error_message",
+              "value": "={{ $json.execution?.error?.message || 'Unknown error' }}",
+              "type": "string"
+            },
+            {
+              "id": "16e56115-27f8-4639-a40e-09886f006afb",
+              "name": "raw_payload",
+              "value": "={{ JSON.stringify($json).slice(0,1000) }}",
+              "type": "string"
+            },
+            {
+              "id": "6355d4a4-7493-4367-995b-52603d284fc6",
+              "name": "created_at",
+              "value": "={{ new Date().toISOString() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        480,
+        240
+      ],
+      "id": "85966128-cd59-4d0d-aab5-5e0d55d9f203",
+      "name": "Normalize Error Payload"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM",
+          "mode": "list",
+          "cachedResultName": "Lead Inbox CRM",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 632891157,
+          "mode": "list",
+          "cachedResultName": "errors",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1NukRi_8vAvfqW67WKbsQPVuS0jFm-VDC00oG2byPugM/edit#gid=632891157"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "message_id": "={{ $json.message_id }}",
+            "received_at": "={{ new Date().toISOString() }}",
+            "error_stage": "={{ $json.error_stage }}",
+            "error_message": "={{ $json.error_message }}",
+            "raw_payload": "={{ $json.raw_payload }}",
+            "created_at": "={{ $json.created_at }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "message_id",
+              "displayName": "message_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "received_at",
+              "displayName": "received_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "error_stage",
+              "displayName": "error_stage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "error_message",
+              "displayName": "error_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "raw_payload",
+              "displayName": "raw_payload",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        768,
+        240
+      ],
+      "id": "bb7d99e1-2af2-4e07-9d2e-52f73a2799a8",
+      "name": "Append row in sheet",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1SjvP7Pqg1SrTi1S",
+          "name": "Google Sheets account crm"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0B5A5PB0HW",
+          "mode": "list",
+          "cachedResultName": "all-n8n"
+        },
+        "text": "=🚨 Workflow Failure Detected  Workflow: {{ $json.workflow?.name || 'Unknown Workflow' }}  Failed Node: {{ $('Normalize Error Payload').item.json.error_stage }}  Error Message: {{ $('Normalize Error Payload').item.json.error_message }}  Occurred At: {{ $('Normalize Error Payload').item.json.created_at }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        1040,
+        240
+      ],
+      "id": "31a86141-0294-45cc-8148-29bd99201fff",
+      "name": "Send a message",
+      "webhookId": "7b01978b-15d2-4e05-8ca9-abf6bc2cabb0",
+      "retryOnFail": false,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "qgFE43ThoZv9LK2G",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Global Failure Detection\n**• Dedicated Error Trigger workflow\n• Captures failed workflow executions\n• Isolates operational incidents\n• Prevents silent production failures\n• Human-supervised recovery flow\n• Independent observability pipeline**",
+        "height": 464,
+        "width": 256
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        112,
+        -64
+      ],
+      "typeVersion": 1,
+      "id": "2be732f5-1759-48e2-806a-3e0d15dd09db",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Structured Error Processing\n**• Normalizes runtime failure payloads\n• Extracts operational metadata\n• Standardizes logging structure\n• Preserves execution traceability\n• Truncates oversized payloads safely\n• UTC timestamp standardization**",
+        "height": 464
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        416,
+        -64
+      ],
+      "typeVersion": 1,
+      "id": "576a66c5-1006-4347-b919-bf79b572c30e",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Persistent Failure Logging\n**• Appends structured errors to CRM sheet\n• Maintains operational audit history\n• Centralized failure visibility\n• Retry-safe operational persistence\n• Workflow-level diagnostics storage\n• Production debugging support** ",
+        "height": 464,
+        "width": 224
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        704,
+        -64
+      ],
+      "typeVersion": 1,
+      "id": "e9bc9029-4c99-4c72-bbcf-8e49fc5d8a3a",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Operational Alerting\n**• Real-time Slack failure notifications\n• Workflow and node visibility\n• Rapid incident awareness\n• Human escalation support\n• Non-recursive recovery design\n• Production monitoring integration**",
+        "height": 464,
+        "width": 224
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        976,
+        -64
+      ],
+      "typeVersion": 1,
+      "id": "c271c31c-b9e0-463c-89db-093f1436484d",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 592,
+        "width": 1296,
+        "color": "#C98787"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        32,
+        -128
+      ],
+      "typeVersion": 1,
+      "id": "ccc445ad-cb16-4013-9457-d653ac1eab9a",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "## PHASE - 5\n\n## Operational Hardening & Reliability Engineering\n\n**• Centralized failure handling\n• Workflow observability & monitoring\n• Structured error persistence\n• Slack-based operational alerting\n• Retry-safe execution strategy\n• Runtime diagnostics collection\n• Human-supervised recovery flow\n• Production-style resilience layer**",
+        "height": 304,
+        "width": 592,
+        "color": "#C98787"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        400,
+        -464
+      ],
+      "typeVersion": 1,
+      "id": "e0aca39f-3c6e-49c1-a109-fdbf64581ecd",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "# 🔴 Error Handler\nError Trigger → Build error row → Append errors tab + Slack alert (parallel).\nBoth writers have `retryOnFail=true, maxTries=3, waitBetweenTries=5000`. Never re-triggers the main workflow.",
+        "height": 188,
+        "width": 520,
+        "color": 3
+      },
+      "id": "8df019d2-dc14-469f-9c4d-d86ace499af1",
+      "name": "Section_Error",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        432,
+        -688
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Normalize Error Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Error Payload": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "68b802d3-ce5b-40e1-91f5-76be6e4c732e",
+  "meta": {
+    "instanceId": "f91ee16137fc0b3b8b4f816350ad8ce6321c2a8bbdb1ac02b686ae39644faa85"
+  },
+  "id": "UcUutBYiu47NkcZp",
+  "tags": []
+}
